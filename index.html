@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LocalForge - Premium Web Design for Local Businesses. Custom websites, SEO, Google reviews, ads, and automated systems that turn visitors into customers.">
+    <title>LocalForge | Premium Web Design & Growth for Local Businesses</title>
+    <style>
+        :root {
+            --primary: #0d0d0d;
+            --secondary: #1a1025;
+            --accent: #7c3aed;
+            --accent-light: #9d5cf6;
+            --accent-glow: rgba(124, 58, 237, 0.4);
+            --gold: #c9a227;
+            --light: #f8f8f8;
+            --text-muted: #a0a0b8;
+            --card-bg: rgba(255,255,255,0.03);
+            --card-border: rgba(124, 58, 237, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #e0e0e8;
+            background: var(--primary);
+            overflow-x: hidden;
+        }
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+        /* ─── NOISE TEXTURE OVERLAY ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* ─── AMBIENT GLOW ORBS ─── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .orb-1 {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
+            top: -200px; left: -200px;
+        }
+        .orb-2 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
+            bottom: 20%; right: -150px;
+        }
+        .orb-3 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(157,92,246,0.1) 0%, transparent 70%);
+            top: 50%; left: 40%;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(13,13,13,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(124,58,237,0.25);
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.2rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .logo span {
+            background: linear-gradient(90deg, #fff 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .nav-links a {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            background: rgba(124,58,237,0.15);
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light)) !important;
+            color: #fff !important;
+            padding: 0.5rem 1.25rem !important;
+            border-radius: 50px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 0 20px var(--accent-glow);
+            transition: box-shadow 0.3s, transform 0.2s !important;
+        }
+
+        .nav-cta:hover {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light)) !important;
+            box-shadow: 0 0 35px var(--accent-glow) !important;
+            transform: translateY(-1px);
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 140px 20px 120px;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(124,58,237,0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(124,58,237,0.07) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(124,58,237,0.15);
+            border: 1px solid rgba(124,58,237,0.35);
+            color: var(--accent-light);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 6px; height: 6px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .hero-logo {
+            font-size: 5.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-light) 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 40px rgba(124,58,237,0.4));
+        }
+
+        .hero h1 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent-light), #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: #fff;
+            padding: 15px 36px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 0 40px var(--accent-glow), 0 8px 32px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.3s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px var(--accent-glow), 0 12px 40px rgba(0,0,0,0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            padding: 15px 36px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s, border-color 0.2s, transform 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(124,58,237,0.15);
+            border-color: rgba(124,58,237,0.5);
+            transform: translateY(-3px);
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #fff;
+            display: block;
+            line-height: 1;
+        }
+
+        .hero-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-stat-divider {
+            width: 1px;
+            background: rgba(124,58,237,0.3);
+            align-self: stretch;
+        }
+
+        /* ─── SECTION WRAPPER ─── */
+        .section-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        section.inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px;
+        }
+
+        .section-label {
+            display: inline-block;
+            color: var(--accent-light);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        h2.section-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #fff;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+        }
+
+        h2.section-title span {
+            background: linear-gradient(90deg, var(--accent-light), #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-sub {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 680px;
+            margin: 0 auto 3.5rem;
+            line-height: 1.75;
+        }
+
+        /* ─── PROBLEM SECTION ─── */
+        .problem-section {
+            background: linear-gradient(180deg, var(--primary) 0%, #0f0a1a 100%);
+            position: relative;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .problem-card {
+            background: rgba(124,58,237,0.06);
+            border: 1px solid rgba(124,58,237,0.18);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .problem-card:hover {
+            border-color: rgba(124,58,237,0.4);
+            background: rgba(124,58,237,0.1);
+        }
+
+        .problem-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .problem-card h3 {
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .problem-card p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        /* ─── SERVICES ─── */
+        .services-section {
+            background: linear-gradient(180deg, #0f0a1a 0%, var(--primary) 100%);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: left;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light), #c084fc);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(124,58,237,0.5);
+            box-shadow: 0 20px 60px rgba(124,58,237,0.15);
+        }
+
+        .service-card.featured {
+            border-color: rgba(124,58,237,0.5);
+            background: rgba(124,58,237,0.07);
+            box-shadow: 0 0 40px rgba(124,58,237,0.1);
+        }
+
+        .service-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-bottom: 1.25rem;
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .service-card h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.75rem;
+        }
+
+        .service-price {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin: 1rem 0;
+            background: linear-gradient(90deg, var(--accent-light), #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .service-price-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+            margin-top: -0.75rem;
+        }
+
+        .service-card > p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .service-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #c8c8d8;
+            font-size: 0.9rem;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .service-features li::before {
+            content: '✦';
+            color: var(--accent-light);
+            font-size: 0.7rem;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .service-card .btn-primary {
+            width: 100%;
+            text-align: center;
+            font-size: 0.95rem;
+            padding: 13px 24px;
+        }
+
+        /* ─── VIDEO SECTION ─── */
+        .video-section {
+            background: linear-gradient(180deg, var(--primary) 0%, #0f0a1a 100%);
+        }
+
+        .video-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(124,58,237,0.3);
+            box-shadow: 0 30px 80px rgba(124,58,237,0.2), 0 0 0 1px rgba(124,58,237,0.1);
+            position: relative;
+        }
+
+        .video-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.5), transparent 50%, rgba(157,92,246,0.3));
+            z-index: -1;
+        }
+
+        /* ─── FEATURES ─── */
+        .features-section {
+            background: var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(124,58,237,0.15);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: border-color 0.3s, background 0.3s, transform 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(124,58,237,0.4);
+            background: rgba(124,58,237,0.06);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(157,92,246,0.1));
+            border: 1px solid rgba(124,58,237,0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-card h3 {
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+
+        /* ─── PROCESS ─── */
+        .process-section {
+            background: linear-gradient(180deg, #0f0a1a 0%, var(--primary) 100%);
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            position: relative;
+        }
+
+        .process-step {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(124,58,237,0.15);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .process-step:hover {
+            border-color: rgba(124,58,237,0.4);
+            box-shadow: 0 10px 40px rgba(124,58,237,0.1);
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 25px var(--accent-glow);
+        }
+
+        .process-step h3 {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .process-step p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ─── WHY US ─── */
+        .why-section {
+            background: var(--primary);
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .why-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(124,58,237,0.15);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .why-card:hover {
+            border-color: rgba(124,58,237,0.4);
+            background: rgba(124,58,237,0.07);
+        }
+
+        .why-icon {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .why-card h3 {
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .why-card p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        /* ─── TESTIMONIAL / TRUST ─── */
+        .trust-bar {
+            background: rgba(124,58,237,0.06);
+            border-top: 1px solid rgba(124,58,237,0.15);
+            border-bottom: 1px solid rgba(124,58,237,0.15);
+            padding: 2.5rem 20px;
+            text-align: center;
+        }
+
+        .trust-bar p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .trust-items {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .trust-item {
+            color: rgba(255,255,255,0.4);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* ─── CTA / CONTACT ─── */
+        .cta-section {
+            position: relative;
+            background: linear-gradient(135deg, #0f0a1a 0%, #1a0d2e 50%, #0f0a1a 100%);
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 120px 20px;
+        }
+
+        .cta-inner h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+        }
+
+        .cta-inner h2 span {
+            background: linear-gradient(90deg, var(--accent-light), #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-inner p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.75;
+        }
+
+        .cta-inner .btn-primary {
+            font-size: 1.1rem;
+            padding: 17px 42px;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .cta-phone {
+            display: block;
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cta-phone a {
+            color: var(--accent-light);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .cta-phone a:hover {
+            text-decoration: underline;
+        }
+
+        .cta-guarantee {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 1.25rem;
+        }
+
+        .cta-guarantee span {
+            color: var(--accent-light);
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: #080810;
+            border-top: 1px solid rgba(124,58,237,0.2);
+            padding: 60px 20px 40px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand .logo {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            max-width: 320px;
+        }
+
+        .footer-col h4 {
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 3px 0;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--accent-light);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            color: rgba(160,160,184,0.5);
+            font-size: 0.85rem;
+        }
+
+        .footer-bottom a {
+            color: rgba(160,160,184,0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--accent-light);
+        }
+
+        /* ─── DIVIDERS ─── */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent);
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .hero-logo { font-size: 3.5rem; }
+            .hero h1 { font-size: 2rem; }
+            .hero-stat-divider { display: none; }
+            .hero-stats { gap: 2rem; }
+            h2.section-title { font-size: 2rem; }
+            .nav-links a:not(.nav-cta) { display: none; }
+            .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+            .cta-inner h2 { font-size: 2.2rem; }
+            .services-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            nav { padding: 1rem 1.25rem; }
+            .hero { padding: 100px 16px 80px; }
+            section.inner { padding: 70px 16px; }
+            .hero-cta-group { flex-direction: column; align-items: center; }
+            .btn-primary, .btn-secondary { width: 100%; max-width: 300px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- ─── HEADER ─── -->
+    <header>
+        <nav>
+            <a href="#" class="logo">
+                <div class="logo-icon">⚒</div>
+                <span>LocalForge</span>
+            </a>
+            <div class="nav-links">
+                <a href="#services">Services</a>
+                <a href="#process">Process</a>
+                <a href="#why">Why Us</a>
+                <a href="#contact" class="nav-cta">Free Consultation</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ─── HERO ─── -->
+    <div class="hero section-wrapper">
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-badge">Atlanta's Local Business Growth Agency</div>
+            <div class="hero-logo">LocalForge ⚒</div>
+            <h1>Premium Web Design & Growth Systems for <em>Local Businesses</em></h1>
+            <p>Websites and automated marketing that turn visitors into loyal, paying customers — custom-built, fast, and results-driven.</p>
+            <div class="hero-cta-group">
+                <a href="#contact" class="btn-primary">Get Your Free Consultation</a>
+                <a href="#services" class="btn-secondary">View Services</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number">3–5</span>
+                    <span class="hero-stat-label">Day Delivery</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">100%</span>
+                    <span class="hero-stat-label">Custom Design</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">∞</span>
+                    <span class="hero-stat-label">Revisions</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">24/7</span>
+                    <span class="hero-stat-label">Automated Systems</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── TRUST BAR ─── -->
+    <div class="trust-bar section-wrapper">
+        <p>Trusted by local businesses across Atlanta & beyond</p>
+        <div class="trust-items">
+            <div class="trust-item">🏠 Home Services</div>
+            <div class="trust-item">🍽️ Restaurants</div>
+            <div class="trust-item">⚕️ Medical & Dental</div>
+            <div class="trust-item">⚖️ Law Firms</div>
+            <div class="trust-item">💪 Fitness Studios</div>
+            <div class="trust-item">🔧 Contractors</div>
+        </div>
+    </div>
+
+    <!-- ─── PROBLEM SECTION ─── -->
+    <div class="problem-section section-wrapper">
+        <section class="inner">
+            <div class="section-label">The Problem</div>
+            <h2 class="section-title">Your Website Is <span>Costing You Money</span></h2>
+            <p class="section-sub">Every day, potential customers visit your site, get frustrated by a slow or outdated experience, and leave to hire your competitor instead. That ends today.</p>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <span class="problem-icon">🐌</span>
+                    <h3>Painfully Slow</h3>
+                    <p>53% of mobile visitors abandon a site that takes more than 3 seconds to load. Every second costs you real customers and real revenue.</p>
+                </div>
+                <div class="problem-card">
+                    <span class="problem-icon">📉</span>
+                    <h3>Invisible on Google</h3>
+                    <p>If you're not on page one, you're practically invisible. Most businesses are leaving thousands on the table by ignoring local SEO.</p>
+                </div>
+                <div class="problem-card">
+                    <span class="problem-icon">📞</span>
+                    <h3>Missed Leads 24/7</h3>
+                    <p>Without automated follow-ups and booking systems, leads that come in after hours go cold — and your competitor answers first.</p>
+                </div>
+                <div class="problem-card">
+                    <span class="problem-icon">⭐</span>
+                    <h3>Weak Review Presence</h3>
+                    <p>90% of buyers read reviews before choosing a local business. A sparse or unmanaged review profile kills trust before you even talk to them.</p>
+                </div>
+                <div class="problem-card">
+                    <span class="problem-icon">🖥️</span>
+                    <h3>Generic Template Sites</h3>
+                    <p>Cookie-cutter templates make you look like every other business. Custom design builds credibility and drives conversions that templates never will.</p>
+                </div>
+                <div class="problem-card">
+                    <span class="problem-icon">💸</span>
+                    <h3>Ad Spend With No ROI</h3>
+                    <p>Throwing money at Google or Facebook ads without a strategy is a fast way to burn cash. You need a system, not just spending.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ─── SERVICES ─── -->
+    <div class="services-section section-wrapper" id="services">
+        <section class="inner">
+            <div class="section-label">Pricing & Packages</div>
+            <h2 class="section-title">Everything You Need to <span>Win Locally</span></h2>
+            <p class="section-sub">Three clear packages. Transparent pricing. No surprises, no lock-in jargon — just results built for local businesses like yours.</p>
+            <div class="services-grid">
+
+                <!-- Starter -->
+                <div class="service-card">
+                    <div class="service-badge">Starter</div>
+                    <span class="service-icon">🌐</span>
+                    <h3>Website Design</h3>
+                    <div class="service-price">$1,000</div>
+                    <p class="service-price-sub">One-time investment</p>
+                    <p>A 100% custom, high-converting website built from scratch in just 3–5 days. No templates. No bloat. Just a fast, beautiful site that works hard for your business.</p>
+                    <ul class="service-features">
+                        <li>100% custom design — zero templates</li>
+                        <li>Mobile-first & lightning-fast</li>
+                        <li>Delivered in 3–5 business days</li>
+                        <li>Unlimited revisions until perfect</li>
+                        <li>On-page SEO foundation included</li>
+                        <li>Contact forms & click-to-call setup</li>
+                    </ul>
+                    <a href="#contact" class="btn-primary">Start My Website</a>
+                </div>
+
+                <!-- Monthly -->
+                <div class="service-card featured">
+                    <div class="service-badge">Most Popular</div>
+                    <span class="service-icon">📈</span>
+                    <h3>Monthly Management</h3>
+                    <div class="service-price">$1,500<small style="font-size:1rem;color:var(--text-muted)">/mo</small></div>
+                    <p class="service-price-sub">Ongoing growth & management</p>
+                    <p>Your website running, growing, and converting — completely hands-off for you. Full management powered by GoHighLevel (GHL) automation.</p>
+                    <ul class="service-features">
+                        <li>Website hosting & maintenance</li>
+                        <li>Ongoing SEO optimization</li>
+                        <li>Google Review Automation (GHL)</li>
+                        <li>Payment processing setup</li>
+                        <li>Monthly performance reporting</li>
+                        <li>Priority support & updates</li>
+                    </ul>
+                    <a href="#contact" class="btn-primary">Get Managed</a>
+                </div>
+
+                <!-- Full Growth -->
+                <div class="service-card">
+                    <div class="service-badge">Best Value</div>
+                    <span class="service-icon">🚀</span>
+                    <h3>Full Growth Package</h3>
+                    <div class="service-price">$2,500<small style="font-size:1rem;color:var(--text-muted)">/mo</small></div>
+                    <p class="service-price-sub">Complete done-for-you growth system</p>
+                    <p>The full LocalForge engine — ads, automation, content, and systems that work around the clock to bring in leads and turn them into customers.</p>
+                    <ul class="service-features">
+                        <li>Ads management (Google & Meta)</li>
+                        <li>Newsletter campaigns (2×/week)</li>
+                        <li>Hosting + SEO + Google Reviews</li>
+                        <li>Automated follow-ups & lead nurture</li>
+                        <li>AI Answering Machine (after-hours)</li>
+                        <li>Google My Business (GMB) revamp</li>
+                        <li>Automated booking system</li>
+                        <li>Full GHL CRM setup & management</li>
+                    </ul>
+                    <a href="#contact" class="btn-primary">Scale My Business</a>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ─── VIDEO SECTION ─── -->
+    <div class="video-section section-wrapper">
+        <section class="inner">
+            <div class="section-label">See It In Action</div>
+            <h2 class="section-title">Watch How <span>LocalForge Works</span></h2>
+            <p class="section-sub">See exactly how we build and manage websites that actually grow local businesses — results you can see, not just promises.</p>
+            <div class="video-wrapper">
+                <!-- Replace YOUR_LOOM_VIDEO_ID with your actual Loom video ID -->
+                <iframe
+                    width="100%"
+                    height="506"
+                    src="https://www.loom.com/embed/YOUR_LOOM_VIDEO_ID"
+                    frameborder="0"
+                    allowfullscreen
+                    style="display:block;"
+                ></iframe>
+            </div>
+        </section>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ─── FEATURES ─── -->
+    <div class="features-section section-wrapper">
+        <section class="inner">
+            <div class="section-label">What's Included</div>
+            <h2 class="section-title">Everything to <span>Dominate Your Market</span></h2>
+            <p class="section-sub">LocalForge isn't just a website. It's a complete local growth system — from first click to booked appointment and 5-star review.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>100% Custom Design</h3>
+                    <p>No templates. Every site is built from scratch, tailored to your brand, your market, and your customers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning-Fast Performance</h3>
+                    <p>Optimized for Core Web Vitals. Fast-loading sites rank higher and convert more visitors into customers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Local SEO Optimization</h3>
+                    <p>Rank higher on Google for your city and service — so the right customers find you first, not your competitors.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Google Review Automation</h3>
+                    <p>Automated review request sequences that build your reputation on autopilot after every job or appointment.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Automated Follow-Ups</h3>
+                    <p>Never lose a lead again. GHL-powered SMS and email sequences nurture every contact automatically until they book.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Automated Booking</h3>
+                    <p>Let customers book appointments 24/7 without phone tag. Syncs directly with your calendar in real time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Google My Business Revamp</h3>
+                    <p>We fully optimize your GMB profile to dominate the local map pack and drive more walk-ins and calls.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📣</div>
+                    <h3>Ads Management</h3>
+                    <p>Google and Meta ad campaigns managed strategically — every dollar tracked and optimized for real local ROI.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📧</div>
+                    <h3>Newsletter Campaigns</h3>
+                    <p>Two targeted email campaigns per week to keep your audience warm, drive repeat business, and build loyalty.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ─── PROCESS ─── -->
+    <div class="process-section section-wrapper" id="process">
+        <section class="inner">
+            <div class="section-label">How It Works</div>
+            <h2 class="section-title">Our <span>Simple 3-Step Process</span></h2>
+            <p class="section-sub">From first call to live website in days — not weeks. We keep it simple so you can focus on running your business.</p>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">01</div>
+                    <h3>Discovery Call</h3>
+                    <p>A focused 30-minute call to understand your business, goals, competitors, and customers. We learn everything we need to build something that actually performs — not just looks good.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">02</div>
+                    <h3>Design & Build</h3>
+                    <p>We get to work immediately. Your 100% custom site is built and delivered in 3–5 business days with unlimited revisions until every detail is exactly right.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">03</div>
+                    <h3>Launch & Grow</h3>
+                    <p>We go live and hand you the keys — or if you choose an ongoing package, we take the wheel. SEO, ads, automation, and reviews all running in the background while you focus on your craft.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ─── WHY US ─── -->
+    <div class="why-section section-wrapper" id="why">
+        <section class="inner">
+            <div class="section-label">Why LocalForge</div>
+            <h2 class="section-title">Built Different. <span>Built Better.</span></h2>
+            <p class="section-sub">We're not a bloated agency with 50 clients on a waitlist. We're a focused, fast, premium team that treats your business like our own.</p>
+            <div class="why-grid">
+                <div class="why-card">
+                    <span class="why-icon">⚡</span>
+                    <h3>3–5 Day Delivery</h3>
+                    <p>Most agencies take weeks. We deliver a complete, custom website in days — without cutting corners on quality.</p>
+                </div>
+                <div class="why-card">
+                    <span class="why-icon">🎯</span>
+                    <h3>Local Business Focus</h3>
+                    <p>We specialize in local businesses. We know what works in your market and what drives real foot traffic and calls.</p>
+                </div>
+                <div class="why-card">
+                    <span class="why-icon">💬</span>
+                    <h3>Direct Access</h3>
+                    <p>No account managers, no middlemen. You talk directly to the person building your website and strategy.</p>
+                </div>
+                <div class="why-card">
+                    <span class="why-icon">📊</span>
+                    <h3>Transparent Pricing</h3>
+                    <p>What you see is what you pay. No hidden fees, no surprise invoices, no fine print designed to trap you.</p>
+                </div>
+                <div class="why-card">
+                    <span class="why-icon">🔄</span>
+                    <h3>Unlimited Revisions</h3>
+                    <p>We're not done until you're completely satisfied. Every detail is refined until it's exactly how you envisioned it.</p>
+                </div>
+                <div class="why-card">
+                    <span class="why-icon">🏆</span>
+                    <h3>Results-Driven</h3>
+                    <p>Pretty doesn't pay bills — conversions do. Every decision we make is focused on turning visitors into customers.</p>
+                </div>
+                <div class="why-card">
+                    <span class="why-icon">🤝</span>
+                    <h3>Long-Term Partner</h3>
+                    <p>We're invested in your growth. Our ongoing clients see us as part of their team, not just a vendor.</p>
+                </div>
+                <div class="why-card">
+                    <span class="why-icon">🛠️</span>
+                    <h3>Full-Stack Systems</h3>
+                    <p>From design to automation to ads — everything works together in one cohesive system, not disconnected tools.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ─── CTA / CONTACT ─── -->
+    <div class="cta-section section-wrapper" id="contact">
+        <div class="cta-inner">
+            <div class="section-label">Get Started</div>
+            <h2>Ready to <span>Grow Your Business?</span></h2>
+            <p>Book a free, no-pressure 30-minute consultation. We'll map out exactly what your business needs to grow online — whether you work with us or not.</p>
+            <a href="mailto:info@localforge.tech" class="btn-primary">Book Your Free Call →</a>
+            <div class="cta-phone">
+                Or call us directly: <a href="tel:4707224451">(470) 722-4451</a>
+            </div>
+            <div class="cta-guarantee">
+                <span>✦</span> No pressure. No obligation. No sales tactics. Just a real conversation.
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <div class="logo-icon">⚒</div>
+                    <span>LocalForge</span>
+                </a>
+                <p style="margin-top:1rem;">Premium web design and automated growth systems built exclusively for local businesses. Fast delivery, real results, transparent pricing.</p>
+                <p style="margin-top:1rem; color:rgba(160,160,184,0.5); font-size:0.85rem;">📍 Atlanta, GA</p>
+            </div>
+            <div class="footer-col">
+                <h4>Services</h4>
+                <a href="#services">Website Design</a>
+                <a href="#services">Monthly Management</a>
+                <a href="#services">Full Growth Package</a>
+                <a href="#services">Local SEO</a>
+                <a href="#services">Google Ads</a>
+                <a href="#services">Review Automation</a>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="#process">Our Process</a>
+                <a href="#why">Why LocalForge</a>
+                <a href="#contact">Free Consultation</a>
+                <a href="mailto:info@localforge.tech">info@localforge.tech</a>
+                <a href="tel:4707224451">(470) 722-4451</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 LocalForge · Atlanta, GA · All rights reserved.</p>
+            <div style="display:flex;gap:1.5rem;">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
