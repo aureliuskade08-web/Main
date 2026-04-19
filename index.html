@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalForge | Premium Web Design for Local Businesses</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'sans-serif'],
+            'serif': ['Playfair Display', 'serif'],
+          },
+          colors: {
+            primary: {
+              50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81',
+            },
+            dark: {
+              900: '#0a0a0f', 800: '#12121a', 700: '#1a1a25', 600: '#252532',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    * { cursor: none; }
+    html { scroll-behavior: smooth; }
+    body { overflow-x: hidden; }
+    
+    .cursor {
+      width: 20px; height: 20px; border: 2px solid #6366f1; border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      transition: transform 0.15s ease, background 0.15s ease; transform: translate(-50%, -50%);
+    }
+    
+    .cursor-dot {
+      width: 6px; height: 6px; background: #6366f1; border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+    }
+    
+    .cursor.hover { transform: translate(-50%, -50%) scale(2); background: rgba(99, 102, 241, 0.1); }
+    
+    .loader {
+      position: fixed; inset: 0; background: #0a0a0f; z-index: 10000;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .loader.hidden { opacity: 0; visibility: hidden; }
+    
+    .loader-bar {
+      width: 200px; height: 3px; background: rgba(99, 102, 241, 0.2);
+      border-radius: 2px; overflow: hidden; margin-top: 30px;
+    }
+    .loader-progress {
+      height: 100%; background: linear-gradient(90deg, #6366f1, #a855f7);
+      border-radius: 2px; animation: loading 2s ease forwards;
+    }
+    @keyframes loading { 0% { width: 0%; } 100% { width: 100%; } }
+    
+    .loader-logo {
+      font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: pulse 1.5s ease infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    
+    .glass {
+      background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    #globe-container {
+      position: fixed; top: 50%; right: 10%; transform: translateY(-50%);
+      width: 600px; height: 600px; z-index: 1; opacity: 0.8; pointer-events: none;
+    }
+    @media (max-width: 1024px) {
+      #globe-container { right: -20%; width: 400px; height: 400px; opacity: 0.4; }
+    }
+    
+    .reveal {
+      opacity: 0; transform: translateY(50px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal.delay-1 { transition-delay: 0.1s; }
+    .reveal.delay-2 { transition-delay: 0.2s; }
+    
+    .service-card { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; }
+    .service-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+      opacity: 0; transition: opacity 0.5s ease;
+    }
+    .service-card:hover::before { opacity: 1; }
+    .service-card:hover { transform: translateY(-10px); border-color: rgba(99, 102, 241, 0.3); }
+    
+    .input-fancy { border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
+    .input-fancy:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+    
+    .magnetic-btn { position: relative; overflow: hidden; transition: all 0.3s ease; }
+    .magnetic-btn:hover::before { opacity: 1; }
+    
+    .process-line {
+      position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, #6366f1, #a855f7, #ec4899);
+    }
+    @media (max-width: 768px) { .process-line { left: 20px; } }
+    
+    .marquee { display: flex; animation: marquee 30s linear infinite; }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    
+    .particle {
+      position: absolute; width: 4px; height: 4px; background: #6366f1; border-radius: 50%; opacity: 0.5;
+      animation: particleFloat 10s infinite ease-in-out;
+    }
+    @keyframes particleFloat {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(100px, -100px); }
+      50% { transform: translate(200px, 50px); }
+      75% { transform: translate(50px, 150px); }
+    }
+    
+    .noise {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+    
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0a0f; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #6366f1, #a855f7); border-radius: 4px; }
+    
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease, padding 0.5s ease; }
+    .accordion-item.active .accordion-content { max-height: 500px; }
+    .accordion-icon { transition: transform 0.3s ease; }
+    .accordion-item.active .accordion-icon { transform: rotate(180deg); }
+    
+    .hero-orb-1 {
+      position: absolute; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+      top: -200px; left: -200px; animation: orbFloat 20s ease-in-out infinite;
+    }
+    .hero-orb-2 {
+      position: absolute; width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
+      bottom: -150px; right: -150px; animation: orbFloat 15s ease-in-out infinite reverse;
+    }
+    @keyframes orbFloat { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(50px, 50px) scale(1.1); } }
+    
+    .animated-gradient {
+      background: linear-gradient(270deg, #6366f1, #a855f7, #ec4899, #6366f1);
+      background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: gradientShift 8s ease infinite;
+    }
+    @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    
+    .border-gradient { position: relative; background: #12121a; border-radius: 1.5rem; }
+    .border-gradient::before {
+      content: ''; position: absolute; inset: -2px;
+      background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+      border-radius: 1.5rem; z-index: -1; opacity: 0.5;
+    }
+    
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px;
+      background: linear-gradient(90deg, #6366f1, #a855f7); transition: width 0.3s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+    
+    .mobile-menu {
+      position: fixed; inset: 0; background: rgba(10, 10, 15, 0.98); z-index: 9990;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: all 0.5s ease;
+    }
+    .mobile-menu.active { opacity: 1; visibility: visible; }
+
+    .pricing-card { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; }
+    .pricing-card:hover { transform: translateY(-12px); border-color: rgba(99, 102, 241, 0.5); box-shadow: 0 25px 60px rgba(99, 102, 241, 0.2); }
+    .pricing-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+    }
+    .price-tag { background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .feature-check { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  </style>
+</head>
+<body class="bg-dark-900 text-white font-sans">
+  <div class="noise"></div>
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+  
+  <div class="loader" id="loader">
+    <div class="loader-logo">LocalForge</div>
+    <div class="loader-bar"><div class="loader-progress"></div></div>
+  </div>
+  
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="absolute top-8 right-8 text-3xl" id="closeMenu"><i class="fa-solid fa-xmark"></i></button>
+    <nav class="flex flex-col items-center space-y-8 text-2xl">
+      <a href="#services" class="hover:text-primary-400 transition">Services</a>
+      <a href="#pricing" class="hover:text-primary-400 transition">Pricing</a>
+      <a href="#process" class="hover:text-primary-400 transition">Process</a>
+      <a href="#why-us" class="hover:text-primary-400 transition">Why Us</a>
+      <a href="#contact" class="bg-primary-600 px-8 py-4 rounded-full hover:bg-primary-500 transition">Get Started</a>
+    </nav>
+  </div>
+  
+  <header class="fixed top-0 left-0 right-0 z-50 py-4" id="header">
+    <div class="max-w-7xl mx-auto px-6">
+      <nav class="glass rounded-2xl px-6 py-4 flex items-center justify-between">
+        <a href="#" class="text-2xl font-bold gradient-text">LocalForge</a>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#services" class="nav-link text-gray-300 hover:text-white transition">Services</a>
+          <a href="#pricing" class="nav-link text-gray-300 hover:text-white transition">Pricing</a>
+          <a href="#process" class="nav-link text-gray-300 hover:text-white transition">Process</a>
+          <a href="#why-us" class="nav-link text-gray-300 hover:text-white transition">Why Us</a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="#contact" class="hidden md:flex magnetic-btn bg-gradient-to-r from-primary-600 to-purple-600 px-6 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-primary-600/30 transition items-center">
+            Start Project <i class="fa-solid fa-arrow-right ml-2"></i>
+          </a>
+          <button class="md:hidden text-2xl" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </nav>
+    </div>
+  </header>
+  
+  <div id="globe-container"></div>
+  
+  <section class="min-h-screen flex items-center relative overflow-hidden pt-32 pb-20">
+    <div class="hero-orb-1"></div>
+    <div class="hero-orb-2"></div>
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="max-w-4xl">
+        <div class="reveal inline-flex items-center glass rounded-full px-5 py-2 mb-8">
+          <span class="w-2 h-2 bg-green-400 rounded-full mr-3 animate-pulse"></span>
+          <span class="text-sm text-gray-300">Ready for 2026 Launches</span>
+        </div>
+        <h1 class="reveal delay-1 text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-8">
+          Premium Websites
+          <span class="block animated-gradient">For High-Growth</span>
+          <span class="block">Local Businesses</span>
+        </h1>
+        <p class="reveal delay-2 text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl leading-relaxed">
+          The ultimate digital foundation. One package. 3-5 day delivery. Unlimited revisions. Built to turn your local traffic into revenue.
+        </p>
+        <div class="reveal delay-3 flex flex-col sm:flex-row gap-4 mb-16">
+          <a href="#contact" class="magnetic-btn bg-gradient-to-r from-primary-600 to-purple-600 px-8 py-5 rounded-full font-bold text-lg hover:shadow-xl hover:shadow-primary-600/30 transition flex items-center justify-center group">
+            Get Started
+            <i class="fa-solid fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+          </a>
+          <a href="#pricing" class="glass px-8 py-5 rounded-full font-semibold text-lg hover:bg-white/10 transition flex items-center justify-center">
+            View Package Details
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Pricing Section -->
+  <section id="pricing" class="py-32 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 relative">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <span class="reveal text-primary-400 font-semibold tracking-widest text-sm">PRICING</span>
+        <h2 class="reveal delay-1 text-4xl md:text-5xl lg:text-6xl font-bold mt-4 mb-6">
+          One Flat Fee. <span class="gradient-text">Zero Compromises.</span>
+        </h2>
+        <p class="reveal delay-2 text-xl text-gray-400">
+          Everything you need for a world-class online presence, delivered in record time.
+        </p>
+      </div>
+
+      <div class="flex justify-center">
+        <div class="reveal pricing-card glass rounded-3xl p-10 md:p-16 relative w-full max-w-4xl">
+          <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div class="inline-flex items-center glass rounded-full px-4 py-1.5 mb-6">
+                <i class="fa-solid fa-bolt text-primary-400 mr-2 text-sm"></i>
+                <span class="text-sm font-semibold text-gray-300">PREMIUM BUILD</span>
+              </div>
+              <h3 class="text-4xl font-black mb-4">The Forge</h3>
+              <p class="text-gray-400 mb-8 text-lg">
+                A custom-engineered, high-conversion website built specifically for your local market. No templates, no recurring monthly fees for the build.
+              </p>
+              <div class="mb-10">
+                <span class="text-7xl font-black price-tag">$1,500</span>
+                <span class="text-gray-500 ml-2 text-xl font-medium">One-Time</span>
+              </div>
+              <a href="#contact" class="magnetic-btn w-full py-5 rounded-xl bg-gradient-to-r from-primary-600 to-purple-600 font-bold text-xl text-center hover:shadow-xl hover:shadow-primary-600/30 transition group flex items-center justify-center">
+                Claim Your Build
+                <i class="fa-solid fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+              </a>
+              <p class="text-center text-gray-500 text-sm mt-4">50% upfront / 50% at launch</p>
+            </div>
+
+            <div class="space-y-4">
+              <h4 class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">What's Included:</h4>
+              <ul class="space-y-4">
+                <li class="flex items-start gap-4">
+                  <div class="feature-check bg-primary-600/20 text-primary-400 mt-1"><i class="fa-solid fa-check text-xs"></i></div>
+                  <span class="text-gray-300 font-medium">100% Custom Design (Zero Templates)</span>
+                </li>
+                <li class="flex items-start gap-4">
+                  <div class="feature-check bg-primary-600/20 text-primary-400 mt-1"><i class="fa-solid fa-check text-xs"></i></div>
+                  <span class="text-gray-300 font-medium">3–5 Business Day Delivery</span>
+                </li>
+                <li class="flex items-start gap-4">
+                  <div class="feature-check bg-primary-600/20 text-primary-400 mt-1"><i class="fa-solid fa-check text-xs"></i></div>
+                  <span class="text-gray-300 font-medium">Unlimited Design Revisions</span>
+                </li>
+                <li class="flex items-start gap-4">
+                  <div class="feature-check bg-primary-600/20 text-primary-400 mt-1"><i class="fa-solid fa-check text-xs"></i></div>
+                  <span class="text-gray-300 font-medium">Complete On-Page SEO Setup</span>
+                </li>
+                <li class="flex items-start gap-4">
+                  <div class="feature-check bg-primary-600/20 text-primary-400 mt-1"><i class="fa-solid fa-check text-xs"></i></div>
+                  <span class="text-gray-300 font-medium">Mobile & Speed Optimization</span>
+                </li>
+                <li class="flex items-start gap-4">
+                  <div class="feature-check bg-primary-600/20 text-primary-400 mt-1"><i class="fa-solid fa-check text-xs"></i></div>
+                  <span class="text-gray-300 font-medium">Google My Business Integration</span>
+                </li>
+                <li class="flex items-start gap-4">
+                  <div class="feature-check bg-primary-600/20 text-primary-400 mt-1"><i class="fa-solid fa-check text-xs"></i></div>
+                  <span class="text-gray-300 font-medium">Contact Forms & Booking Links</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section id="process" class="py-32 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <span class="reveal text-primary-400 font-semibold tracking-widest text-sm">OUR PROCESS</span>
+        <h2 class="reveal delay-1 text-4xl md:text-5xl font-bold mt-4 mb-6">Simple. Fast. Done.</h2>
+      </div>
+      <div class="relative">
+        <div class="process-line hidden md:block"></div>
+        <div class="space-y-32">
+          <div class="reveal flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/2 md:text-right order-2 md:order-1">
+              <h3 class="text-3xl font-bold mb-4">Discovery</h3>
+              <p class="text-gray-400 text-lg">Quick 30-min call to lock in your brand, goals, and content. We get everything we need to build your vision.</p>
+            </div>
+            <div class="md:w-1/2 order-1 md:order-2">
+              <div class="border-gradient p-8 text-center"><i class="fa-solid fa-phone text-4xl text-primary-400"></i></div>
+            </div>
+          </div>
+          <div class="reveal flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/2 order-1 md:order-2">
+              <div class="border-gradient p-8 text-center"><i class="fa-solid fa-pen-ruler text-4xl text-primary-400"></i></div>
+            </div>
+            <div class="md:w-1/2 md:order-1">
+              <h3 class="text-3xl font-bold mb-4">The Build</h3>
+              <p class="text-gray-400 text-lg">We build your custom site in 3-5 days. You get unlimited revisions during this phase to ensure it's perfect.</p>
+            </div>
+          </div>
+          <div class="reveal flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/2 md:text-right order-2 md:order-1">
+              <h3 class="text-3xl font-bold mb-4">Handover</h3>
+              <p class="text-gray-400 text-lg">We launch the site, connect your domain, and hand you the keys. It's yours forever, no monthly design fees.</p>
+            </div>
+            <div class="md:w-1/2 order-1 md:order-2">
+              <div class="border-gradient p-8 text-center"><i class="fa-solid fa-rocket text-4xl text-primary-400"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-32 relative">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-center text-4xl font-bold mb-16">Frequently Asked <span class="gradient-text">Questions</span></h2>
+      <div class="space-y-4">
+        <div class="reveal accordion-item glass rounded-2xl overflow-hidden active">
+          <button class="accordion-btn w-full px-8 py-6 flex items-center justify-between text-left">
+            <span class="text-lg font-semibold">Is it really $1,500 one-time?</span>
+            <i class="fa-solid fa-chevron-down accordion-icon text-primary-400"></i>
+          </button>
+          <div class="accordion-content px-8 text-gray-400">
+            <p class="pb-6">Yes. The $1,500 covers the entire design, development, and launch of your custom website. There are no monthly "design" fees or recurring payments to us for the build itself.</p>
+          </div>
+        </div>
+        <div class="reveal accordion-item glass rounded-2xl overflow-hidden">
+          <button class="accordion-btn w-full px-8 py-6 flex items-center justify-between text-left">
+            <span class="text-lg font-semibold">How long does the project take?</span>
+            <i class="fa-solid fa-chevron-down accordion-icon text-primary-400"></i>
+          </button>
+          <div class="accordion-content px-8 text-gray-400">
+            <p class="pb-6">Our standard delivery time is 3–5 business days once we have your content. We move fast so you can start getting leads.</p>
+          </div>
+        </div>
+        <div class="reveal accordion-item glass rounded-2xl overflow-hidden">
+          <button class="accordion-btn w-full px-8 py-6 flex items-center justify-between text-left">
+            <span class="text-lg font-semibold">What about hosting and domain?</span>
+            <i class="fa-solid fa-chevron-down accordion-icon text-primary-400"></i>
+          </button>
+          <div class="accordion-content px-8 text-gray-400">
+            <p class="pb-6">You maintain ownership of your domain and hosting. We can set it up for you on your own accounts, or recommend ultra-fast providers. You only pay the direct cost of the hosting provider (usually $15-20/mo).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-32 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 relative">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready to <span class="gradient-text">Launch?</span></h2>
+          <p class="text-xl text-gray-400 mb-10">Lock in your build today. We'll respond within 24 hours to schedule your kickoff.</p>
+          <div class="space-y-6">
+            <p class="text-lg font-semibold"><i class="fa-solid fa-phone text-primary-400 mr-4"></i>(470) 722-4451</p>
+            <p class="text-lg font-semibold"><i class="fa-solid fa-envelope text-primary-400 mr-4"></i>hello@localforge.io</p>
+          </div>
+        </div>
+        <form class="glass rounded-3xl p-10" action="https://formspree.io/f/mykboqqg" method="POST">
+          <div class="space-y-6">
+            <input type="text" name="name" class="input-fancy w-full px-6 py-4 rounded-xl bg-dark-700 text-white" placeholder="Full Name" required>
+            <input type="text" name="business" class="input-fancy w-full px-6 py-4 rounded-xl bg-dark-700 text-white" placeholder="Business Name" required>
+            <input type="email" name="email" class="input-fancy w-full px-6 py-4 rounded-xl bg-dark-700 text-white" placeholder="Email Address" required>
+            <textarea name="message" class="input-fancy w-full px-6 py-4 rounded-xl bg-dark-700 text-white h-32" placeholder="Tell us about your project"></textarea>
+            <button type="submit" class="magnetic-btn w-full py-5 rounded-xl bg-gradient-to-r from-primary-600 to-purple-600 font-bold text-xl hover:shadow-lg transition">Submit Inquiry</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    window.addEventListener('load', () => { setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 2000); });
+    const cursor = document.querySelector('.cursor'), cursorDot = document.querySelector('.cursor-dot');
+    let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; cursorDot.style.left = mouseX + 'px'; cursorDot.style.top = mouseY + 'px'; });
+    function animateCursor() { cursorX += (mouseX - cursorX) * 0.1; cursorY += (mouseY - cursorY) * 0.1; cursor.style.left = cursorX + 'px'; cursor.style.top = cursorY + 'px'; requestAnimationFrame(animateCursor); }
+    animateCursor();
+    document.querySelectorAll('a, button, input, textarea').forEach(el => { el.addEventListener('mouseenter', () => cursor.classList.add('hover')); el.addEventListener('mouseleave', () => cursor.classList.remove('hover')); });
+    const menuBtn = document.getElementById('menuBtn'), closeMenuBtn = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
+    closeMenuBtn.addEventListener('click', () => mobileMenu.classList.remove('active'));
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); }); }, { threshold: 0.1 });
+    revealElements.forEach(el => revealObserver.observe(el));
+    document.querySelectorAll('.accordion-btn').forEach(btn => { btn.addEventListener('click', () => { const item = btn.parentElement; item.classList.toggle('active'); }); });
+
+    // 3D Scene
+    const container = document.getElementById('globe-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(600, 600);
+    container.appendChild(renderer.domElement);
+    const globeGeo = new THREE.SphereGeometry(2.2, 64, 64);
+    const globeMat = new THREE.MeshBasicMaterial({ color: 0x6366f1, wireframe: true, transparent: true, opacity: 0.15 });
+    const globe = new THREE.Mesh(globeGeo, globeMat);
+    scene.add(globe);
+    camera.position.z = 5;
+    function animateGlobe() { requestAnimationFrame(animateGlobe); globe.rotation.y += 0.002; renderer.render(scene, camera); }
+    animateGlobe();
+  </script>
+</body>
+</html>
